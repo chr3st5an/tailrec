@@ -1,7 +1,7 @@
 [project]
 name = "tailrec"
 version = "0.1.1"
-description = "execute a tail recursive function iteratively"
+description = "Execute a tail recursive function iteratively"
 authors = [
     {name = "Christian Kreutz", email = "christian.kreutz.dev@stud.uni-due.de"}
 ]
@@ -19,6 +19,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+mypy = "^1.15.0"
 
 [[tool.poetry.source]]
 name = "PyPI"
