@@ -81,6 +81,16 @@ class tailrec(Generic[P, R]):
         self.__func = __func
         update_wrapper(self, __func)
 
+        try:
+            if self.__func.__code__.co_argcount == 0:
+                raise TypeError(
+                    "Missing a parameter which receives the function itself. "
+                    + f"Perhaps, try to change the function signature to '{self.__func.__name__}(this)' "
+                    + f"in {self.__func.__code__.co_filename} at line {self.__func.__code__.co_firstlineno + 1}"
+                )
+        except AttributeError:
+            pass
+
     def __repr__(self) -> str:
         return repr(self.__func)
 
