@@ -19,3 +19,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
