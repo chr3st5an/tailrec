@@ -1,16 +1,17 @@
 [project]
 name = "tailrec"
 version = "0.1.0"
-description = ""
+description = "execute a tail recursive function iteratively"
 authors = [
-    {name = "Christian Kreutz",email = "christian.kreutz.dev@stud.uni-due.de"}
+    {name = "Christian Kreutz", email = "christian.kreutz.dev@stud.uni-due.de"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-]
+dependencies = []
 
+[project.urls]
+repository = "https://github.com/chr3st5an/tailrec"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -18,4 +19,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
-
