@@ -27,7 +27,6 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 __author__ = "Christian Kreutz"
 
-
 from functools import update_wrapper
 from typing import (
     Callable,
@@ -51,6 +50,33 @@ class _Call(Generic[P]):
 
 
 class tailrec(Generic[P, R]):
+    """Execute a tail recursive function iteratively.
+
+    The first parameter of the wrapped function is a callable with the
+    same signature (without the callable) as the wrapped function. Recursive
+    calls should be done using this callable in combination with a `return`.
+
+    Notes
+    -----
+    This decorator does **not** verify if the wrapped function is actually
+    tail recursive. This is the responsibility of the user.
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Tail_call
+
+    Examples
+    --------
+    >>> from tailrec import tailrec
+    >>> @tailrec
+    >>> def factorial(f, n: int, accum: int = 1) -> int:
+    >>>     if n > 0:
+    >>>         return f(n - 1, accum * n)
+    >>>     else:
+    >>>         return accum
+    >>> factorial(1_100)
+    5343708488092637703...  # No RecursionError
+    """
     def __init__(self, __func: Callable[Concatenate[Callable[P, R], P], R]):
         self.__func = __func
         update_wrapper(self, __func)
