@@ -26,9 +26,9 @@ from tailrec import tailrec
 
 
 @tailrec
-def factorial(f, n: int, accum: int = 1) -> int:
+def factorial(n: int, accum: int = 1) -> int:
     if n > 0:
-        return f(n - 1, accum * n)
+        return factorial(n - 1, accum * n)
     else:
         return accum
 
