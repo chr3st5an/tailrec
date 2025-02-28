@@ -1,6 +1,6 @@
 [project]
 name = "tailrec"
-version = "0.1.3"
+version = "0.1.4"
 description = "Execute a tail recursive function iteratively"
 authors = [
     {name = "Christian Kreutz", email = "christian.kreutz.dev@stud.uni-due.de"}

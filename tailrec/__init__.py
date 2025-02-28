@@ -23,16 +23,19 @@ SOFTWARE.
 """
 
 __all__ = ["tailrec"]
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __license__ = "MIT"
 __author__ = "Christian Kreutz"
 
 from functools import wraps
+from types import FrameType
 from typing import (
     Callable,
+    cast,
     ParamSpec,
-    TypeVar,
+    TypeVar
 )
+import sys
 
 
 R = TypeVar('R')
@@ -72,16 +75,12 @@ def tailrec(__func: Callable[P, R]) -> Callable[P, R]:
     >>> factorial(1_100)
     5343708488092637703...  # No RecursionError
     """
-    __recursive__ = False
-
     @wraps(__func)
     def wrapper(*args: P.args, **kwds: P.kwargs) -> R:
-        nonlocal __recursive__
+        caller = cast(FrameType, sys._getframe().f_back)
 
-        if __recursive__:
+        if caller.f_code is __func.__code__:
             raise TailCall(*args, **kwds)
-
-        __recursive__ = True
 
         while True:
             try:
@@ -89,6 +88,5 @@ def tailrec(__func: Callable[P, R]) -> Callable[P, R]:
             except TailCall as call:
                 args, kwds = call.args, call.kwds  # type: ignore
             else:
-                __recursive__ = False
                 return res
     return wrapper
