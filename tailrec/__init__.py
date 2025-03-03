@@ -90,12 +90,13 @@ def tailrec(__func: Callable[P, R]) -> Callable[P, R]:
 
     @wraps(__func)
     def wrapper(*args: P.args, **kwds: P.kwargs) -> R:
-        caller = cast(FrameType, sys._getframe().f_back)
+        caller = sys._getframe()
 
         try:
             # Detecting recursive call
-            if caller.f_code is __func.__code__:
-                raise TailCall(*args, **kwds)
+            while caller := caller.f_back:
+                if caller.f_code is __func.__code__:
+                    raise TailCall(*args, **kwds)
         finally:
             del caller
 
