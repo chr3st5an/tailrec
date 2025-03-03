@@ -22,7 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from functools import wraps
+from typing import (
+    Callable,
+    ParamSpec,
+    TypeVar
+)
+
 from tailrec import tailrec
+
+
+P = ParamSpec('P')
+R = TypeVar('R')
+
+
+def identity(__func: Callable[P, R]) -> Callable[P, R]:
+    """Decorator which simply executes the given function"""
+    @wraps(__func)
+    def wrapper(*args: P.args, **kwds: P.kwargs) -> R:
+        return __func(*args, **kwds)
+    return wrapper
 
 
 @tailrec
@@ -43,6 +62,18 @@ def _factorial(n: int):
     return product
 
 
+@tailrec
+def ping_pong(n: int) -> None | str:
+    if n <= 1:
+        return "pong"
+
+    if 1 < n < 100:
+        return ping_pong(n % 2)
+
+    # No return
+    ping_pong(n - 10)
+
+
 def test_factorial():
     assert hasattr(factorial, "__name__")
     assert factorial.__qualname__ == "factorial"
@@ -52,3 +83,13 @@ def test_factorial():
         assert factorial(n) == _factorial(n)
 
     assert factorial(1_100), "This shouldn't raise a RecursionError"
+
+    factorial_ = identity(identity(factorial))
+    assert factorial_(1_100), "tailrec should work in a decorator chain"
+
+
+def test_ping_pong():
+    for i in range(1, 100):
+        assert ping_pong(i) == "pong", "Should return 'pong'"
+
+    assert ping_pong(100) is None, "Should return None"

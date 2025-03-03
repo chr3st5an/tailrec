@@ -23,15 +23,13 @@ SOFTWARE.
 """
 
 __all__ = ["tailrec"]
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 __license__ = "MIT"
 __author__ = "Christian Kreutz"
 
-from types import FrameType, TracebackType
-from collections import UserDict
+from types import TracebackType
 from functools import wraps
 from typing import (
-    Any,
     Callable,
     cast,
     ParamSpec,
@@ -57,9 +55,11 @@ class TailCall(BaseException):
 def tailrec(__func: Callable[P, R]) -> Callable[P, R]:
     """Execute a tail recursive function iteratively.
 
-    Notes
-    -----
-    This decorator does **not** verify if the wrapped function is actually
+    The decorator internally uses exceptions to signalize tail recursive calls.
+    Thus, ensure that recursive calls are not executed within a `try` block
+    with a raw `except` clause.
+
+    The decorator does not verify if the wrapped function is actually
     tail recursive. This is the responsibility of the user.
 
     References
@@ -85,7 +85,7 @@ def tailrec(__func: Callable[P, R]) -> Callable[P, R]:
     # in the given function
     returns = {
         inst.offset: True for inst in dis.Bytecode(__func.__code__)
-                            if inst.opname == "RETURN_VALUE"
+                           if inst.opname == "RETURN_VALUE"
     }
 
     @wraps(__func)
